@@ -70,19 +70,21 @@ headers = getheaders(d)
 
 # writing to excel
 
-import xlwt
-from xlwt import Workbook
+import openpyxl.utils.cell
+from openpyxl import Workbook
 
 wb = Workbook()
-s = wb.add_sheet('Merged data')
+s = wb.active
 
 # writes a single row in the excel sheet
 def writerow(sheet, row, headers, element=None):
 	for i in range(0, len(headers)):
+		l = openpyxl.utils.cell.get_column_letter(i+1)
 		if element is None:
-			sheet.write(row, i, headers[i])
+			sheet['{}{}'.format(l, row+1)] = headers[i]
 			continue
-		sheet.write(row, i, element.get(headers[i]))
+		if element.get(headers[i]) == 'nan': continue
+		sheet['{}{}'.format(l, row+1)] = element.get(headers[i])
 
 # writing headers
 row = 0
